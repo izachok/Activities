@@ -1,18 +1,30 @@
 import { Badge, Button, Card } from "react-bootstrap";
+import React, { SyntheticEvent, useState } from "react";
 
 import { Activity } from "../../../app/models/activity";
-import React from "react";
 
 interface Props {
   activities: Activity[];
   selectActivity: (id: string) => void;
   deleteActivity: (id: string) => void;
+  isSubmitting: boolean;
 }
 export default function ActivityList({
   activities,
   selectActivity,
   deleteActivity,
+  isSubmitting,
 }: Props) {
+  const [target, setTarget] = useState("");
+
+  function handleActivityDelete(
+    event: SyntheticEvent<HTMLButtonElement>,
+    id: string
+  ) {
+    setTarget(event.currentTarget.name);
+    deleteActivity(id);
+  }
+
   return (
     <>
       {activities.map((item) => (
@@ -34,8 +46,12 @@ export default function ActivityList({
             >
               View
             </Button>
-            <Button variant="danger" onClick={() => deleteActivity(item.id)}>
-              Delete
+            <Button
+              variant="danger"
+              name={item.id}
+              onClick={(e) => handleActivityDelete(e, item.id)}
+            >
+              {isSubmitting && target === item.id ? "Loading..." : "Delete"}
             </Button>
           </Card.Body>
           <Card.Footer>

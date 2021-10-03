@@ -7,12 +7,14 @@ interface Props {
   activity: Activity | undefined;
   closeForm: () => void;
   createOrEdit: (activity: Activity) => void;
+  isSubmitting: boolean;
 }
 
 export default function ActivityForm({
   activity: selectedActivity,
   closeForm,
   createOrEdit,
+  isSubmitting,
 }: Props) {
   const initialState = selectedActivity ?? {
     id: "",
@@ -67,7 +69,7 @@ export default function ActivityForm({
             onChange={handleInputChange}
           />
           <FormControl
-            type="text"
+            type="date"
             placeholder="Date"
             className="mb-3"
             value={activity.date}
@@ -92,7 +94,7 @@ export default function ActivityForm({
           />
           <div className="float-end">
             <Button type="submit" variant="primary" className="mx-3">
-              Submit
+              {isSubmitting ? "Loading..." : "Submit"}
             </Button>
             <Button type="button" variant="secondary" onClick={closeForm}>
               Cancel

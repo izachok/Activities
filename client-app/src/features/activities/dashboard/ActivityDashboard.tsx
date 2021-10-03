@@ -16,6 +16,7 @@ interface Props {
   closeForm: () => void;
   createOrEdit: (activity: Activity) => void;
   deleteActivity: (id: string) => void;
+  isSubmitting: boolean;
 }
 
 export default function ActivityDashboard({
@@ -28,6 +29,7 @@ export default function ActivityDashboard({
   closeForm,
   createOrEdit,
   deleteActivity,
+  isSubmitting,
 }: Props) {
   return (
     <Container className="py-4">
@@ -38,6 +40,7 @@ export default function ActivityDashboard({
               activities={activities}
               selectActivity={selectActivity}
               deleteActivity={deleteActivity}
+              isSubmitting={isSubmitting}
             />
           </ListGroup>
         </Col>
@@ -54,6 +57,7 @@ export default function ActivityDashboard({
               activity={selectedActivity}
               closeForm={closeForm}
               createOrEdit={createOrEdit}
+              isSubmitting={isSubmitting}
             />
           )}
         </Col>
