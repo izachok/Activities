@@ -1,37 +1,35 @@
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 
-import { Activity } from "./../../../app/models/activity";
 import React from "react";
+import { useStore } from "./../../../app/stores/store";
 
-interface Props {
-  activity: Activity;
-  cancelSelectActivity: () => void;
-  openForm: (id?: string) => void;
-}
+export default function ActivityDetails() {
+  const { activityStore } = useStore();
+  const { selectedActivity } = activityStore;
 
-export default function ActivityDetails({
-  activity,
-  cancelSelectActivity,
-  openForm,
-}: Props) {
+  if (!selectedActivity) return <></>;
+
   return (
     <Card className="mb-3">
       <Card.Img
         variant="top"
-        src={`/assets/categoryImages/${activity.category}.jpg`}
+        src={`/assets/categoryImages/${selectedActivity.category}.jpg`}
       />
       <Card.Body>
-        <Card.Title>{activity.title}</Card.Title>
-        <Card.Subtitle>{activity.date}</Card.Subtitle>
-        <Card.Text>{activity.description}</Card.Text>
+        <Card.Title>{selectedActivity.title}</Card.Title>
+        <Card.Subtitle>{selectedActivity.date}</Card.Subtitle>
+        <Card.Text>{selectedActivity.description}</Card.Text>
         <ButtonGroup className="container-fluid">
           <Button
             variant="outline-primary"
-            onClick={() => openForm(activity.id)}
+            onClick={() => activityStore.openForm(selectedActivity.id)}
           >
             Edit
           </Button>
-          <Button variant="outline-secondary" onClick={cancelSelectActivity}>
+          <Button
+            variant="outline-secondary"
+            onClick={activityStore.cancelSelectedActivity}
+          >
             Cancel
           </Button>
         </ButtonGroup>

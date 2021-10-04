@@ -1,6 +1,8 @@
 import "./app/layout/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { StoreContext, store } from "./app/stores/store";
+
 import App from "./app/layout/App";
 import React from "react";
 import ReactDOM from "react-dom";
@@ -8,7 +10,9 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <StoreContext.Provider value={store}>
+      <App />
+    </StoreContext.Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -1,21 +1,14 @@
 import { Button, Card, Form, FormControl } from "react-bootstrap";
 import React, { ChangeEvent, useState } from "react";
 
-import { Activity } from "./../../../app/models/activity";
+import { observer } from "mobx-react-lite";
+import { useStore } from "./../../../app/stores/store";
 
-interface Props {
-  activity: Activity | undefined;
-  closeForm: () => void;
-  createOrEdit: (activity: Activity) => void;
-  isSubmitting: boolean;
-}
+function ActivityForm() {
+  const { activityStore } = useStore();
+  const { selectedActivity, createActivity, updateActivity, isLoading } =
+    activityStore;
 
-export default function ActivityForm({
-  activity: selectedActivity,
-  closeForm,
-  createOrEdit,
-  isSubmitting,
-}: Props) {
   const initialState = selectedActivity ?? {
     id: "",
     title: "",
@@ -31,8 +24,11 @@ export default function ActivityForm({
   //TODO fix any
   function handleSubmit(event: any) {
     event.preventDefault();
-    createOrEdit(activity);
-    // console.log(activity);
+    if (activity.id) {
+      updateActivity(activity);
+    } else {
+      createActivity(activity);
+    }
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -94,9 +90,13 @@ export default function ActivityForm({
           />
           <div className="float-end">
             <Button type="submit" variant="primary" className="mx-3">
-              {isSubmitting ? "Loading..." : "Submit"}
+              {isLoading ? "Loading..." : "Submit"}
             </Button>
-            <Button type="button" variant="secondary" onClick={closeForm}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={activityStore.closeForm}
+            >
               Cancel
             </Button>
           </div>
@@ -105,3 +105,5 @@ export default function ActivityForm({
     </Card>
   );
 }
+
+export default observer(ActivityForm);

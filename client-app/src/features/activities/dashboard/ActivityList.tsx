@@ -1,21 +1,13 @@
 import { Badge, Button, Card } from "react-bootstrap";
 import React, { SyntheticEvent, useState } from "react";
 
-import { Activity } from "../../../app/models/activity";
+import { observer } from "mobx-react-lite";
+import { useStore } from "../../../app/stores/store";
 
-interface Props {
-  activities: Activity[];
-  selectActivity: (id: string) => void;
-  deleteActivity: (id: string) => void;
-  isSubmitting: boolean;
-}
-export default function ActivityList({
-  activities,
-  selectActivity,
-  deleteActivity,
-  isSubmitting,
-}: Props) {
+function ActivityList() {
   const [target, setTarget] = useState("");
+  const { activityStore } = useStore();
+  const { activitiesByDate, isLoading, deleteActivity } = activityStore;
 
   function handleActivityDelete(
     event: SyntheticEvent<HTMLButtonElement>,
@@ -27,7 +19,7 @@ export default function ActivityList({
 
   return (
     <>
-      {activities.map((item) => (
+      {activitiesByDate.map((item) => (
         <Card className="mb-3" key={item.id}>
           <Card.Header>
             <Card.Title>{item.title}</Card.Title>
@@ -42,7 +34,7 @@ export default function ActivityList({
               className="mx-3"
               variant="primary"
               as="a"
-              onClick={() => selectActivity(item.id)}
+              onClick={() => activityStore.selectActivity(item.id)}
             >
               View
             </Button>
@@ -51,7 +43,7 @@ export default function ActivityList({
               name={item.id}
               onClick={(e) => handleActivityDelete(e, item.id)}
             >
-              {isSubmitting && target === item.id ? "Loading..." : "Delete"}
+              {isLoading && target === item.id ? "Loading..." : "Delete"}
             </Button>
           </Card.Body>
           <Card.Footer>
@@ -63,3 +55,5 @@ export default function ActivityList({
     </>
   );
 }
+
+export default observer(ActivityList);
