@@ -1,6 +1,7 @@
 import { Badge, Button, Card } from "react-bootstrap";
 import React, { SyntheticEvent, useState } from "react";
 
+import { NavLink } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../app/stores/store";
 
@@ -30,14 +31,12 @@ function ActivityList() {
             <Card.Text>
               {item.city}, {item.venue}
             </Card.Text>
-            <Button
-              className="mx-3"
-              variant="primary"
-              as="a"
-              onClick={() => activityStore.selectActivity(item.id)}
-            >
-              View
-            </Button>
+
+            <NavLink to={`/activities/${item.id}`}>
+              <Button className="mx-3" variant="primary" type="button">
+                View
+              </Button>
+            </NavLink>
             <Button
               variant="danger"
               name={item.id}

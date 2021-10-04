@@ -1,15 +1,22 @@
 import { Col, Container, ListGroup, Row } from "react-bootstrap";
+import React, { useEffect } from "react";
 
-import ActivityDetails from "../details/ActivityDetails";
-import ActivityForm from "../form/ActivityForm";
 import ActivityList from "./ActivityList";
-import React from "react";
+import LoadingComponent from "./../../../app/layout/LoadingComponent";
 import { observer } from "mobx-react-lite";
 import { useStore } from "./../../../app/stores/store";
 
 function ActivityDashboard() {
   const { activityStore } = useStore();
-  const { selectedActivity, editMode } = activityStore;
+  const { loadActivities, activityRegistry } = activityStore;
+
+  useEffect(() => {
+    if (activityRegistry.size <= 1) loadActivities();
+  }, [activityRegistry, loadActivities]);
+
+  if (activityStore.isInitialLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <Container className="py-4">
@@ -20,8 +27,7 @@ function ActivityDashboard() {
           </ListGroup>
         </Col>
         <Col sm={4}>
-          {selectedActivity && !editMode && <ActivityDetails />}
-          {editMode && <ActivityForm />}
+          <h2>Activity filters</h2>
         </Col>
       </Row>
     </Container>

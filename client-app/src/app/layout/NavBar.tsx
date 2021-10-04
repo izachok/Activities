@@ -1,14 +1,12 @@
 import { Button, Container, Nav, Navbar } from "react-bootstrap";
 
-import { useStore } from "./../stores/store";
+import { NavLink } from "react-router-dom";
 
 export default function NavBar() {
-  const { activityStore } = useStore();
-
   return (
     <Navbar bg="info" variant="light" className="p-3">
       <Container>
-        <Navbar.Brand href="#">
+        <Navbar.Brand as={NavLink} to="/" exact>
           <img
             src="/assets/logo.svg"
             width="30"
@@ -19,10 +17,12 @@ export default function NavBar() {
           Activities
         </Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link href="#">Activities</Nav.Link>
-          <Button variant="success" onClick={() => activityStore.openForm()}>
-            Create activity
-          </Button>
+          <Nav.Link as={NavLink} to="/activities">
+            Activities
+          </Nav.Link>
+          <NavLink to="/createActivity">
+            <Button variant="success">Create activity</Button>
+          </NavLink>
         </Nav>
       </Container>
     </Navbar>

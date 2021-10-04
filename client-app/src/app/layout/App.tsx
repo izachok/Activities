@@ -1,28 +1,42 @@
-import React, { useEffect } from "react";
+import { Route, Switch, useLocation } from "react-router";
 
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";
-import LoadingComponent from "./LoadingComponent";
+import ActivityDetails from "./../../features/activities/details/ActivityDetails";
+import ActivityForm from "../../features/activities/form/ActivityForm";
+import HomePage from "./../../features/home/HomePage";
 import NavBar from "./NavBar";
+import React from "react";
 import { observer } from "mobx-react-lite";
-import { useStore } from "./../stores/store";
 
 function App() {
-  const { activityStore } = useStore();
-
-  useEffect(() => {
-    activityStore.loadActivities();
-  }, [activityStore]);
-
-  if (activityStore.isInitialLoading) {
-    return <LoadingComponent />;
-  }
+  const location = useLocation();
 
   return (
     <div className="body">
-      <header>
-        <NavBar />
-      </header>
-      <ActivityDashboard />
+      <Route path="/" exact component={HomePage} />
+      <Route
+        path={"/(.+)"}
+        render={() => (
+          <>
+            <header>
+              <NavBar />
+            </header>
+            <Switch>
+              <Route
+                path="/activities"
+                exact
+                component={ActivityDashboard}
+              ></Route>
+              <Route path="/activities/:id" component={ActivityDetails}></Route>
+              <Route
+                key={location.key}
+                path={["/createActivity", "/manage/:id"]}
+                component={ActivityForm}
+              />
+            </Switch>
+          </>
+        )}
+      />
     </div>
   );
 }
