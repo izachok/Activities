@@ -1,6 +1,7 @@
 import { Col, Container, ListGroup, Row } from "react-bootstrap";
 import React, { useEffect } from "react";
 
+import ActivitiesFilters from "./ActivitiesFilters";
 import ActivityList from "./ActivityList";
 import LoadingComponent from "./../../../app/layout/LoadingComponent";
 import { observer } from "mobx-react-lite";
@@ -27,7 +28,7 @@ function ActivityDashboard() {
           </ListGroup>
         </Col>
         <Col sm={4}>
-          <h2>Activity filters</h2>
+          <ActivitiesFilters />
         </Col>
       </Row>
     </Container>

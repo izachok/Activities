@@ -1,56 +1,24 @@
-import { Badge, Button, Card } from "react-bootstrap";
-import React, { SyntheticEvent, useState } from "react";
-
-import { NavLink } from "react-router-dom";
+import ActivitiesListItem from "./ActivitiesListItem";
+import { Stack } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../app/stores/store";
 
 function ActivityList() {
-  const [target, setTarget] = useState("");
   const { activityStore } = useStore();
-  const { activitiesByDate, isLoading, deleteActivity } = activityStore;
-
-  function handleActivityDelete(
-    event: SyntheticEvent<HTMLButtonElement>,
-    id: string
-  ) {
-    setTarget(event.currentTarget.name);
-    deleteActivity(id);
-  }
+  const { groupedActivities } = activityStore;
 
   return (
     <>
-      {activitiesByDate.map((item) => (
-        <Card className="mb-3" key={item.id}>
-          <Card.Header>
-            <Card.Title>{item.title}</Card.Title>
-          </Card.Header>
-
-          <Card.Body>
-            <Card.Text>{item.description}</Card.Text>
-            <Card.Text>
-              {item.city}, {item.venue}
-            </Card.Text>
-
-            <NavLink to={`/activities/${item.id}`}>
-              <Button className="mx-3" variant="primary" type="button">
-                View
-              </Button>
-            </NavLink>
-            <Button
-              variant="danger"
-              name={item.id}
-              onClick={(e) => handleActivityDelete(e, item.id)}
-            >
-              {isLoading && target === item.id ? "Loading..." : "Delete"}
-            </Button>
-          </Card.Body>
-          <Card.Footer>
-            <Card.Text>{item.date}</Card.Text>
-            <Badge bg="secondary">{item.category}</Badge>
-          </Card.Footer>
-        </Card>
-      ))}
+      {groupedActivities.map(([groupDate, activities]) => {
+        return (
+          <Stack gap={0} key={groupDate} className="m-3">
+            <p className="h5 text-primary">{groupDate}</p>
+            {activities.map((item) => (
+              <ActivitiesListItem activity={item} key={item.id} />
+            ))}
+          </Stack>
+        );
+      })}
     </>
   );
 }

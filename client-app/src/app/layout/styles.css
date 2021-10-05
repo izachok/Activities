@@ -1,3 +1,23 @@
 .body {
   background-color: #eaeaea;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+}
+
+.gradient-background {
+  background: rgb(0, 55, 98);
+  background: linear-gradient(
+    125deg,
+    rgba(0, 55, 98, 1) 0%,
+    rgba(39, 100, 191, 1) 35%,
+    rgba(0, 182, 219, 1) 100%
+  );
+}
+
+.react-calendar {
+  border-radius: 0.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.125) !important;
 }

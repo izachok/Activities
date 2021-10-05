@@ -1,5 +1,6 @@
 import "./app/layout/styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-calendar/dist/Calendar.css";
 
 import { StoreContext, store } from "./app/stores/store";
 
