@@ -14,6 +14,9 @@ export default function NavBar() {
           <Nav.Link as={NavLink} to="/activities">
             Activities
           </Nav.Link>
+          <Nav.Link as={NavLink} to="/errors">
+            Errors
+          </Nav.Link>
           <NavLink to="/createActivity">
             <Button variant="success">Create activity</Button>
           </NavLink>

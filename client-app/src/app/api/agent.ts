@@ -1,6 +1,9 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 import { Activity } from "./../models/activity";
+import { history } from "../..";
+import { store } from "../stores/store";
+import { toast } from "react-toastify";
 
 axios.defaults.baseURL = "http://localhost:5000/api";
 
@@ -10,14 +13,57 @@ const sleep = (delay: number) => {
   });
 };
 
-axios.interceptors.response.use((response) => {
-  return sleep(1000)
-    .then(() => response)
-    .catch((error) => {
-      console.log(error);
-      return Promise.reject(error);
-    });
-});
+axios.interceptors.response.use(
+  (response) => {
+    return sleep(1000).then(() => response);
+    // .catch((error) => {
+    //   console.log(error);
+    //   return Promise.reject(error);
+    // });
+  },
+  (error: AxiosError) => {
+    const { data, status, config } = error.response!;
+    switch (status) {
+      case 400:
+        //bad requesr
+        if (typeof data === "string") {
+          toast.error(data);
+        }
+        //not a guid case
+        if (
+          config.method?.toLowerCase() === "get" &&
+          data.errors.hasOwnProperty("id")
+        ) {
+          history.push("/not-found");
+        }
+        //validation error case
+        if (data.errors) {
+          const modalStateErrors = [];
+          for (const key in data.errors) {
+            if (data.errors[key]) {
+              modalStateErrors.push(data.errors[key]);
+            }
+          }
+          throw modalStateErrors.flat();
+        }
+        break;
+      case 401:
+        toast.error("Unauthorized");
+        break;
+      case 404:
+        history.push("/not-found");
+        break;
+      case 500:
+        store.commonStore.setServerError(data);
+        history.push("/server-error");
+        break;
+      default:
+        toast.error("Default error");
+        break;
+    }
+    return Promise.reject(error);
+  }
+);
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
