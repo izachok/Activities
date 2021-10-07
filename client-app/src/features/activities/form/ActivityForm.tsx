@@ -1,9 +1,18 @@
-import { Button, Card, Form, FormControl } from "react-bootstrap";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import * as Yup from "yup";
+
+import { Button, Card, Container } from "react-bootstrap";
+import { Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 
+import { Activity } from "../../../app/models/activity";
+import DateInput from "../../../app/common/form/DateInput";
 import { Link } from "react-router-dom";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
+import SelectInput from "../../../app/common/form/SelectInput";
+import TextArea from "./../../../app/common/form/TextArea";
+import TextInput from "../../../app/common/form/TextInput";
+import { categoryOptions } from "./../../../app/common/options/categoryOptions";
 import { observer } from "mobx-react-lite";
 import { useStore } from "./../../../app/stores/store";
 import { v4 as uuid } from "uuid";
@@ -25,21 +34,29 @@ function ActivityForm() {
     id: "",
     title: "",
     category: "",
-    date: "",
+    date: null,
     description: "",
     city: "",
     venue: "",
   };
 
-  const [activity, setActivity] = useState(initialState);
+  const validationSchema = Yup.object({
+    title: Yup.string().required("The activity title is required"),
+    description: Yup.string().required("The activity description is required"),
+    date: Yup.string().required("The date is required").nullable(),
+    category: Yup.string().required(),
+    city: Yup.string().required(),
+    venue: Yup.string().required(),
+  });
+
+  const [activity, setActivity] = useState<Activity>(initialState);
 
   useEffect(() => {
     if (id) loadActivity(id).then((activity) => setActivity(activity!));
   }, [id, loadActivity]);
 
   //TODO fix any
-  function handleSubmit(event: any) {
-    event.preventDefault();
+  function handleFormSubmit(activity: Activity) {
     if (activity.id.length === 0) {
       const newActivity = { ...activity, id: uuid() };
       createActivity(newActivity).then(() =>
@@ -52,78 +69,62 @@ function ActivityForm() {
     }
   }
 
-  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    const { name, value } = event.target;
-    setActivity({ ...activity, [name]: value });
-  }
-
   if (isInitialLoading) <LoadingComponent />;
 
   return (
-    <Card>
-      <Card.Body>
-        <Form onSubmit={handleSubmit} autoComplete="off">
-          <FormControl
-            type="text"
-            placeholder="Title"
-            className="mb-3"
-            value={activity.title}
-            name="title"
-            onChange={handleInputChange}
-          />
-          <FormControl
-            as="textarea"
-            placeholder="Description"
-            className="mb-3"
-            value={activity.description}
-            name="description"
-            onChange={handleInputChange}
-          />
-          <FormControl
-            type="text"
-            placeholder="Category"
-            className="mb-3"
-            value={activity.category}
-            name="category"
-            onChange={handleInputChange}
-          />
-          <FormControl
-            type="date"
-            placeholder="Date"
-            className="mb-3"
-            value={activity.date}
-            name="date"
-            onChange={handleInputChange}
-          />
-          <FormControl
-            type="text"
-            placeholder="City"
-            className="mb-3"
-            value={activity.city}
-            name="city"
-            onChange={handleInputChange}
-          />
-          <FormControl
-            type="text"
-            placeholder="Venue"
-            className="mb-3"
-            value={activity.venue}
-            name="venue"
-            onChange={handleInputChange}
-          />
-          <div className="float-end">
-            <Button type="submit" variant="primary" className="mx-3">
-              {isLoading ? "Loading..." : "Submit"}
-            </Button>
-            <Link to="/activities">
-              <Button type="button" variant="secondary">
-                Cancel
-              </Button>
-            </Link>
-          </div>
-        </Form>
-      </Card.Body>
-    </Card>
+    <Container>
+      <Card className="mt-3">
+        <Card.Body>
+          <Formik
+            initialValues={activity}
+            enableReinitialize
+            onSubmit={(values) => handleFormSubmit(values)}
+            validationSchema={validationSchema}
+          >
+            {({ handleSubmit, dirty, isSubmitting, isValid }) => (
+              <Form onSubmit={handleSubmit} autoComplete="off">
+                <h5>Activity details</h5>
+                <TextInput placeholder="Title" name="title" />
+                <TextArea placeholder="Description" name="description" />
+                <SelectInput
+                  placeholder="Category"
+                  name="category"
+                  options={categoryOptions}
+                />
+                <DateInput
+                  placeholderText="Date"
+                  name="date"
+                  showTimeSelect
+                  timeCaption="time"
+                  timeFormat="hh:mm"
+                  dateFormat="MMMM d, yyyy hh:mm"
+                  className="form-control mt-4"
+                />
+                <h5 className="mt-3">Location details</h5>
+                <TextInput placeholder="City" name="city" />
+                <TextInput placeholder="Venue" name="venue" />
+                <br />
+                <div className="float-end">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting || !dirty || !isValid}
+                    variant="primary"
+                    className="mx-3"
+                  >
+                    {isLoading ? "Loading..." : "Submit"}
+                  </Button>
+                  <Link to="/activities">
+                    <Button type="button" variant="secondary">
+                      Cancel
+                    </Button>
+                  </Link>
+                </div>
+              </Form>
+            )}
+          </Formik>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 }
 

@@ -11,6 +11,7 @@ import React, { SyntheticEvent, useState } from "react";
 
 import { Activity } from "../../../app/models/activity";
 import { Link } from "react-router-dom";
+import { format } from "date-fns";
 import { useStore } from "../../../app/stores/store";
 
 interface Props {
@@ -49,7 +50,7 @@ export default function ActivitiesListItem({ activity }: Props) {
         <ListGroup>
           <ListGroupItem className="py-2">
             <ClockFill className="mx-2" />
-            {activity.date}
+            {format(activity.date!, "dd MMM yyyy hh:mm")}
             <GeoAltFill className="mx-2" />
             {activity.city}, {activity.venue}
           </ListGroupItem>
