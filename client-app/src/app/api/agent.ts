@@ -1,3 +1,4 @@
+import { User, UserFormValues } from "../models/user";
 import axios, { AxiosError, AxiosResponse } from "axios";
 
 import { Activity } from "./../models/activity";
@@ -12,6 +13,12 @@ const sleep = (delay: number) => {
     setTimeout(resolve, delay);
   });
 };
+
+axios.interceptors.request.use((config) => {
+  const token = store.commonStore.token;
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 axios.interceptors.response.use(
   (response) => {
@@ -84,6 +91,13 @@ const Activities = {
   delete: (id: string) => requests.del<void>(`/activities/${id}`),
 };
 
-const agent = { Activities };
+const Account = {
+  current: () => requests.get<User>("/account"),
+  login: (user: UserFormValues) => requests.post<User>("/account/login", user),
+  register: (user: UserFormValues) =>
+    requests.post<User>("account/register", user),
+};
+
+const agent = { Activities, Account };
 
 export default agent;
