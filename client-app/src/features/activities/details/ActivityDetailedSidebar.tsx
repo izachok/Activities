@@ -1,42 +1,46 @@
 import { Badge, Image, ListGroup, ListGroupItem } from "react-bootstrap";
 
+import { Activity } from "../../../app/models/activity";
+import { Link } from "react-router-dom";
 import React from "react";
+import { observer } from "mobx-react-lite";
 
-export default function ActivityDetailedSidebar() {
+interface Props {
+  activity: Activity;
+}
+
+export default observer(function ActivityDetailedSidebar({
+  activity: { attendees, host },
+}: Props) {
+  if (!attendees) return null;
+
   return (
     <ListGroup>
-      <ListGroupItem active>3 People Going</ListGroupItem>
-      <ListGroupItem className="p-3">
-        <Image
-          src="/assets/user.png"
-          height="60"
-          className="float-start me-2"
-        />
-        <h5>
-          Bob{" "}
-          <Badge bg="warning" className="float-end">
-            Host
-          </Badge>
-        </h5>
-        <div className="text-warning">Following</div>
+      <ListGroupItem active>
+        {attendees.length} {attendees.length === 1 ? "Person" : "People"} going
       </ListGroupItem>
-      <ListGroupItem className="p-3">
-        <Image
-          src="/assets/user.png"
-          height="60"
-          className="float-start me-2"
-        />
-        <h5>Bob </h5>
-        <div className="text-warning">Following</div>
-      </ListGroupItem>
-      <ListGroupItem className="p-3">
-        <Image
-          src="/assets/user.png"
-          height="60"
-          className="float-start me-2"
-        />
-        <h5>Sally </h5>
-      </ListGroupItem>
+
+      {attendees.map((attendee) => (
+        <ListGroupItem key={attendee.username} className="p-3">
+          <Image
+            src={attendee.image || "/assets/user.png"}
+            height="60"
+            className="float-start me-2"
+            alt={attendee.username}
+          />
+          <h5>
+            <Link to={`/profiles/${attendee.username}`}>
+              {attendee.displayName}
+            </Link>{" "}
+            {attendee.username === host?.username && (
+              <Badge bg="warning" className="float-end">
+                Host
+              </Badge>
+            )}
+          </h5>
+          <div className="text-warning">Following</div>
+        </ListGroupItem>
+      ))}
     </ListGroup>
   );
-}
+});

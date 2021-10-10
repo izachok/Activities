@@ -30,7 +30,7 @@ function ActivityDetails() {
           <ActivityDetailedChat />
         </Col>
         <Col sm={4}>
-          <ActivityDetailedSidebar />
+          <ActivityDetailedSidebar activity={selectedActivity} />
         </Col>
       </Row>
     </Container>

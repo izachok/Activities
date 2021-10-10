@@ -5,7 +5,7 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router";
 
-import { Activity } from "../../../app/models/activity";
+import { ActivityFormValues } from "../../../app/models/activity";
 import DateInput from "../../../app/common/form/DateInput";
 import { Link } from "react-router-dom";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
@@ -19,26 +19,11 @@ import { v4 as uuid } from "uuid";
 
 function ActivityForm() {
   const { activityStore } = useStore();
-  const {
-    createActivity,
-    updateActivity,
-    isLoading,
-    loadActivity,
-    isInitialLoading,
-  } = activityStore;
+  const { createActivity, updateActivity, loadActivity, isInitialLoading } =
+    activityStore;
 
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
-
-  const initialState = {
-    id: "",
-    title: "",
-    category: "",
-    date: null,
-    description: "",
-    city: "",
-    venue: "",
-  };
 
   const validationSchema = Yup.object({
     title: Yup.string().required("The activity title is required"),
@@ -49,15 +34,19 @@ function ActivityForm() {
     venue: Yup.string().required(),
   });
 
-  const [activity, setActivity] = useState<Activity>(initialState);
+  const [activity, setActivity] = useState<ActivityFormValues>(
+    new ActivityFormValues()
+  );
 
   useEffect(() => {
-    if (id) loadActivity(id).then((activity) => setActivity(activity!));
+    if (id)
+      loadActivity(id).then((activity) =>
+        setActivity(new ActivityFormValues(activity))
+      );
   }, [id, loadActivity]);
 
-  //TODO fix any
-  function handleFormSubmit(activity: Activity) {
-    if (activity.id.length === 0) {
+  function handleFormSubmit(activity: ActivityFormValues) {
+    if (!activity.id) {
       const newActivity = { ...activity, id: uuid() };
       createActivity(newActivity).then(() =>
         history.push(`/activities/${newActivity.id}`)
@@ -111,7 +100,7 @@ function ActivityForm() {
                     variant="primary"
                     className="mx-3"
                   >
-                    {isLoading ? "Loading..." : "Submit"}
+                    {isSubmitting ? "Submitting..." : "Submit"}
                   </Button>
                   <Link to="/activities">
                     <Button type="button" variant="secondary">

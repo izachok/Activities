@@ -1,4 +1,5 @@
 import {
+  Alert,
   Badge,
   Button,
   Card,
@@ -9,6 +10,7 @@ import {
 import { ClockFill, GeoAltFill } from "react-bootstrap-icons";
 import React, { SyntheticEvent, useState } from "react";
 
+import ActivitiesListItemAttendee from "./ActivitiesListItemAttendee";
 import { Activity } from "../../../app/models/activity";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
@@ -34,6 +36,7 @@ export default function ActivitiesListItem({ activity }: Props) {
   return (
     <Card className="mb-3" key={activity.id}>
       <Card.Header>
+        {activity.isCancelled && <Alert variant="danger">Cancelled</Alert>}
         <Image
           roundedCircle
           src="/assets/user.png"
@@ -43,7 +46,13 @@ export default function ActivitiesListItem({ activity }: Props) {
         <Link to={`/activities/${activity.id}`}>
           <Card.Title className="link-dark">{activity.title}</Card.Title>
         </Link>
-        <Card.Subtitle>Hosted by Bob</Card.Subtitle>
+        <Card.Subtitle>Hosted by {activity.host?.displayName}</Card.Subtitle>
+        {activity.isHost && (
+          <Badge bg="warning">You are hosting this activity</Badge>
+        )}
+        {!activity.isHost && activity.isGoing && (
+          <Badge bg="success">You are going to this activity</Badge>
+        )}
       </Card.Header>
 
       <Card.Body className="p-0">
@@ -74,7 +83,7 @@ export default function ActivitiesListItem({ activity }: Props) {
         </ListGroup>
       </Card.Body>
       <Card.Footer>
-        <Card.Text>Attendees go here</Card.Text>
+        <ActivitiesListItemAttendee attendees={activity.attendees!} />
         <Badge bg="secondary">{activity.category}</Badge>
       </Card.Footer>
     </Card>
