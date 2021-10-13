@@ -13,6 +13,12 @@ interface Props {
 export default observer(function ActivitiesListItemAttendee({
   attendees,
 }: Props) {
+  function trimDescr(descr: string | undefined) {
+    if (descr) {
+      return descr.length > 30 ? descr.substr(0, 30).trim() + "..." : descr;
+    }
+  }
+
   return (
     <Stack direction="horizontal" as="ul" className="list-unstyled">
       {attendees.map((attendee) => (
@@ -28,7 +34,7 @@ export default observer(function ActivitiesListItemAttendee({
                     height="200"
                     rounded
                   />
-                  <p>{attendee.bio}</p>
+                  <p>{trimDescr(attendee.bio)}</p>
                   <p>
                     <PeopleFill height="30" className="me-2" />
                     20 followers

@@ -49,6 +49,7 @@ export default class ProfileStore {
           if (photo.isMain && store.userStore.user) {
             store.userStore.setImage(photo.url);
             this.profile.image = photo.url;
+            store.activityStore.setIsInitialLoading(true);
           }
         }
       });
@@ -67,6 +68,7 @@ export default class ProfileStore {
     try {
       await agent.Profiles.setMainPhoto(photo.id);
       store.userStore.setImage(photo.url);
+      store.activityStore.setIsInitialLoading(true);
       runInAction(() => {
         if (this.profile && this.profile.photos) {
           const currentMainPhoto = this.profile.photos.find((p) => p.isMain);
@@ -96,6 +98,28 @@ export default class ProfileStore {
           this.profile.photos = this.profile?.photos?.filter(
             (p) => p.id !== photo.id
           );
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
+  };
+
+  updateProfile = async (profile: Profile) => {
+    this.isLoading = true;
+    try {
+      await agent.Profiles.updateProfile(profile);
+      store.userStore.setDisplayName(profile.displayName);
+      store.activityStore.setIsInitialLoading(true);
+
+      runInAction(() => {
+        if (this.profile) {
+          this.profile.displayName = profile.displayName;
+          this.profile.bio = profile.bio;
         }
       });
     } catch (error) {

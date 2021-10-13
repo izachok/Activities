@@ -1,6 +1,7 @@
 import { Card, Col, Nav, Row, Tab } from "react-bootstrap";
 
 import { Profile } from "../../app/models/profile";
+import ProfileAbout from "./ProfileAbout";
 import ProfilePhotos from "./ProfilePhotos";
 import React from "react";
 import { observer } from "mobx-react-lite";
@@ -12,11 +13,13 @@ interface Props {
 export default observer(function ProfileContent({ profile }: Props) {
   return (
     <Card className="mt-3 p-3">
-      <Tab.Container defaultActiveKey="photos">
+      <Tab.Container defaultActiveKey="about">
         <Row>
           <Col sm={9}>
             <Tab.Content>
-              <Tab.Pane eventKey="about">About</Tab.Pane>
+              <Tab.Pane eventKey="about">
+                <ProfileAbout profile={profile} />
+              </Tab.Pane>
               <Tab.Pane eventKey="photos">
                 <ProfilePhotos profile={profile} />
               </Tab.Pane>

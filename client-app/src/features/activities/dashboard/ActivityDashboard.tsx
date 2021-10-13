@@ -12,8 +12,8 @@ function ActivityDashboard() {
   const { loadActivities, activityRegistry } = activityStore;
 
   useEffect(() => {
-    if (activityRegistry.size <= 1) loadActivities();
-  }, [activityRegistry, loadActivities]);
+    if (activityStore.isInitialLoading) loadActivities();
+  }, [activityStore.isInitialLoading, loadActivities]);
 
   if (activityStore.isInitialLoading) {
     return <LoadingComponent />;

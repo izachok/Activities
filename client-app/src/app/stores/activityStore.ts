@@ -7,7 +7,6 @@ import { format } from "date-fns";
 import { store } from "./store";
 
 export default class ActivityStore {
-  // activities: Activity[] = [];
   activityRegistry = new Map<string, Activity>();
   selectedActivity: Activity | undefined = undefined;
   editMode = false;
