@@ -42,7 +42,7 @@ export default observer(function NavBar() {
               height="40"
             />
             <NavDropdown title={user?.displayName} id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to={`/profile/${user?.username}`}>
+              <NavDropdown.Item as={Link} to={`/profiles/${user?.username}`}>
                 <PersonFill />
                 Profile
               </NavDropdown.Item>

@@ -10,6 +10,7 @@ import LoginForm from "../../features/users/LoginForm";
 import ModalContainer from "../common/modals/ModalContainer";
 import NavBar from "./NavBar";
 import NotFound from "./../../features/errors/NotFound";
+import ProfilePage from "../../features/profiles/ProfilePage";
 import ServerError from "../../features/errors/ServerError";
 import TestErrors from "./../../features/errors/TestError";
 import { ToastContainer } from "react-toastify";
@@ -54,6 +55,7 @@ function App() {
                 path={["/createActivity", "/manage/:id"]}
                 component={ActivityForm}
               />
+              <Route path="/profiles/:username" component={ProfilePage}></Route>
               <Route path="/errors" component={TestErrors}></Route>
               <Route path="/server-error" component={ServerError}></Route>
               <Route path="/login" component={LoginForm} />

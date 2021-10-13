@@ -39,14 +39,19 @@ export default function ActivitiesListItem({ activity }: Props) {
         {activity.isCancelled && <Alert variant="danger">Cancelled</Alert>}
         <Image
           roundedCircle
-          src="/assets/user.png"
+          src={activity.host?.image || "/assets/user.png"}
           height={100}
           className="float-start my-2 mx-3"
         />
         <Link to={`/activities/${activity.id}`}>
           <Card.Title className="link-dark">{activity.title}</Card.Title>
         </Link>
-        <Card.Subtitle>Hosted by {activity.host?.displayName}</Card.Subtitle>
+        <Card.Subtitle>
+          Hosted by{" "}
+          <Link to={`/profiles/${activity.hostUsername}`}>
+            {activity.host?.displayName}
+          </Link>
+        </Card.Subtitle>
         {activity.isHost && (
           <Badge bg="warning">You are hosting this activity</Badge>
         )}
