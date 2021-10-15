@@ -9,11 +9,20 @@ import { useStore } from "./../../../app/stores/store";
 
 function ActivityDashboard() {
   const { activityStore } = useStore();
-  const { loadActivities, activityRegistry } = activityStore;
+  const { loadActivities } = activityStore;
 
   useEffect(() => {
-    if (activityStore.isInitialLoading) loadActivities();
-  }, [activityStore.isInitialLoading, loadActivities]);
+    if (
+      activityStore.isInitialLoading ||
+      (activityStore.activityRegistry &&
+        activityStore.activityRegistry.size <= 1)
+    )
+      loadActivities();
+  }, [
+    activityStore.activityRegistry,
+    activityStore.isInitialLoading,
+    loadActivities,
+  ]);
 
   if (activityStore.isInitialLoading) {
     return <LoadingComponent />;

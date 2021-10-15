@@ -13,11 +13,17 @@ import { useStore } from "./../../../app/stores/store";
 function ActivityDetails() {
   const { id } = useParams<{ id: string }>();
   const { activityStore } = useStore();
-  const { selectedActivity, loadActivity, isInitialLoading } = activityStore;
+  const {
+    selectedActivity,
+    loadActivity,
+    isInitialLoading,
+    clearSelectedActivity,
+  } = activityStore;
 
   useEffect(() => {
     if (id) loadActivity(id);
-  }, [id, loadActivity]);
+    return () => clearSelectedActivity();
+  }, [clearSelectedActivity, id, loadActivity]);
 
   if (isInitialLoading || !selectedActivity) return <LoadingComponent />;
 
@@ -27,7 +33,7 @@ function ActivityDetails() {
         <Col sm={8}>
           <ActivityDetailedHeader activity={selectedActivity} />
           <ActivityDetailedInfo activity={selectedActivity} />
-          <ActivityDetailedChat />
+          <ActivityDetailedChat activityId={selectedActivity.id} />
         </Col>
         <Col sm={4}>
           <ActivityDetailedSidebar activity={selectedActivity} />
