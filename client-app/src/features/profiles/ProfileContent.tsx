@@ -2,18 +2,25 @@ import { Card, Col, Nav, Row, Tab } from "react-bootstrap";
 
 import { Profile } from "../../app/models/profile";
 import ProfileAbout from "./ProfileAbout";
+import ProfileFollowings from "./ProfileFollowings";
 import ProfilePhotos from "./ProfilePhotos";
 import React from "react";
 import { observer } from "mobx-react-lite";
+import { useStore } from "./../../app/stores/store";
 
 interface Props {
   profile: Profile;
 }
 
 export default observer(function ProfileContent({ profile }: Props) {
+  const { profileStore } = useStore();
+
   return (
     <Card className="mt-3 p-3">
-      <Tab.Container defaultActiveKey="about">
+      <Tab.Container
+        defaultActiveKey="about"
+        onSelect={(eventKey) => profileStore.setActiveTab(eventKey)}
+      >
         <Row>
           <Col sm={9}>
             <Tab.Content>
@@ -24,8 +31,12 @@ export default observer(function ProfileContent({ profile }: Props) {
                 <ProfilePhotos profile={profile} />
               </Tab.Pane>
               <Tab.Pane eventKey="events">Events</Tab.Pane>
-              <Tab.Pane eventKey="followers">Followers</Tab.Pane>
-              <Tab.Pane eventKey="following">Following</Tab.Pane>
+              <Tab.Pane eventKey="followers">
+                <ProfileFollowings />
+              </Tab.Pane>
+              <Tab.Pane eventKey="following">
+                <ProfileFollowings />
+              </Tab.Pane>
             </Tab.Content>
           </Col>
           <Col sm={3}>

@@ -38,7 +38,9 @@ export default observer(function ActivityDetailedSidebar({
               </Badge>
             )}
           </h5>
-          <div className="text-warning">Following</div>
+          {attendee.isFollowing && (
+            <div className="text-warning">Following</div>
+          )}
         </ListGroupItem>
       ))}
     </ListGroup>

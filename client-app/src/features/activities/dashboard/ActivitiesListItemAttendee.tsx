@@ -1,8 +1,9 @@
-import { Image, OverlayTrigger, Popover, Stack } from "react-bootstrap";
+import { Image, Stack } from "react-bootstrap";
 
 import { Link } from "react-router-dom";
-import { PeopleFill } from "react-bootstrap-icons";
+import Popover from "../../../app/common/popover/Popover";
 import { Profile } from "../../../app/models/profile";
+import ProfileCard from "../../profiles/ProfileCard";
 import React from "react";
 import { observer } from "mobx-react-lite";
 
@@ -13,44 +14,25 @@ interface Props {
 export default observer(function ActivitiesListItemAttendee({
   attendees,
 }: Props) {
-  function trimDescr(descr: string | undefined) {
-    if (descr) {
-      return descr.length > 30 ? descr.substr(0, 30).trim() + "..." : descr;
-    }
-  }
-
   return (
     <Stack direction="horizontal" as="ul" className="list-unstyled">
       {attendees.map((attendee) => (
         <li key={attendee.username} className="me-2">
-          <OverlayTrigger
-            placement="auto"
-            overlay={
-              <Popover id={`popover-${attendee.username}`}>
-                <Popover.Header as="h3">{attendee.displayName}</Popover.Header>
-                <Popover.Body>
-                  <Image
-                    src={attendee.image || "/assets/user.png"}
-                    height="200"
-                    rounded
-                  />
-                  <p>{trimDescr(attendee.bio)}</p>
-                  <p>
-                    <PeopleFill height="30" className="me-2" />
-                    20 followers
-                  </p>
-                </Popover.Body>
-              </Popover>
+          <Popover
+            mainComponent={
+              <Link to={`/profiles/${attendee.username}`}>
+                <Image
+                  roundedCircle
+                  src={attendee.image || "/assets/user.png"}
+                  height="40"
+                  className={
+                    attendee.isFollowing ? "border border-2 border-warning" : ""
+                  }
+                />
+              </Link>
             }
-          >
-            <Link to={`/profiles/${attendee.username}`}>
-              <Image
-                roundedCircle
-                src={attendee.image || "/assets/user.png"}
-                height="40"
-              />
-            </Link>
-          </OverlayTrigger>
+            popoverComponent={<ProfileCard profile={attendee} />}
+          />
         </li>
       ))}
     </Stack>
