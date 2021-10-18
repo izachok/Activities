@@ -1,43 +1,75 @@
-import { Col, Container, ListGroup, Row } from "react-bootstrap";
-import React, { useEffect } from "react";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
 
 import ActivitiesFilters from "./ActivitiesFilters";
 import ActivityList from "./ActivityList";
+import ActivityListItemPlaceholder from "./ActivityListItemPlaceholder";
+import InfiniteScroll from "react-infinite-scroller";
 import LoadingComponent from "./../../../app/layout/LoadingComponent";
+import { PagingParams } from "../../../app/models/pagination";
 import { observer } from "mobx-react-lite";
 import { useStore } from "./../../../app/stores/store";
 
 function ActivityDashboard() {
   const { activityStore } = useStore();
-  const { loadActivities } = activityStore;
+  const {
+    loadActivities,
+    isInitialLoading,
+    activityRegistry,
+    setPagingParams,
+    pagination,
+  } = activityStore;
+
+  const [loadingNext, setLoadingNext] = useState(false);
+
+  function handleGetNext() {
+    setLoadingNext(true);
+    setPagingParams(new PagingParams(pagination!.currentPage + 1));
+    loadActivities().then(() => setLoadingNext(false));
+  }
 
   useEffect(() => {
-    if (
-      activityStore.isInitialLoading ||
-      (activityStore.activityRegistry &&
-        activityStore.activityRegistry.size <= 1)
-    )
+    if (isInitialLoading || (activityRegistry && activityRegistry.size <= 1))
       loadActivities();
-  }, [
-    activityStore.activityRegistry,
-    activityStore.isInitialLoading,
-    loadActivities,
-  ]);
+  }, [activityRegistry, isInitialLoading, loadActivities]);
 
-  if (activityStore.isInitialLoading) {
-    return <LoadingComponent />;
-  }
+  // if (isInitialLoading && !loadingNext) {
+  //   return <LoadingComponent />;
+  // }
 
   return (
     <Container className="py-4">
       <Row>
         <Col sm={8}>
-          <ListGroup>
-            <ActivityList />
-          </ListGroup>
+          {isInitialLoading && !loadingNext ? (
+            <>
+              <ActivityListItemPlaceholder />
+              <ActivityListItemPlaceholder />
+            </>
+          ) : (
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={handleGetNext}
+              hasMore={
+                !loadingNext &&
+                !!pagination &&
+                pagination.currentPage < pagination.totalPages
+              }
+              initialLoad={false}
+            >
+              <ActivityList />
+            </InfiniteScroll>
+          )}
         </Col>
         <Col sm={4}>
           <ActivitiesFilters />
+        </Col>
+        <Col xs={8} className="text-center">
+          {loadingNext && (
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          )}
         </Col>
       </Row>
     </Container>

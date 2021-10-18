@@ -1,5 +1,6 @@
 import { Activity, ActivityFormValues } from "./../models/activity";
-import { makeAutoObservable, runInAction } from "mobx";
+import { Pagination, PagingParams } from "./../models/pagination";
+import { makeAutoObservable, reaction, runInAction } from "mobx";
 
 import { Profile } from "./../models/profile";
 import agent from "../api/agent";
@@ -13,9 +14,66 @@ export default class ActivityStore {
   isLoading = false;
   isInitialLoading = true;
   isSubmitting = false;
+  pagination: Pagination | null = null;
+  pagingParams = new PagingParams();
+  predicate = new Map().set("all", true);
 
   constructor() {
     makeAutoObservable(this);
+
+    reaction(
+      () => this.predicate.keys(),
+      () => {
+        this.pagingParams = new PagingParams();
+        this.activityRegistry.clear();
+        this.loadActivities();
+      }
+    );
+  }
+
+  setPagingParams = (pagingParams: PagingParams) => {
+    this.pagingParams = pagingParams;
+  };
+
+  setPredicate = (predicate: string, value: string | Date) => {
+    const resetPredicate = () => {
+      this.predicate.forEach((value, key) => {
+        if (key !== "startDate") this.predicate.delete(key);
+      });
+    };
+
+    switch (predicate) {
+      case "all":
+        resetPredicate();
+        this.predicate.set("all", true);
+        break;
+      case "isGoing":
+        resetPredicate();
+        this.predicate.set("isGoing", true);
+        break;
+      case "isHost":
+        resetPredicate();
+        this.predicate.set("isHost", true);
+        break;
+      case "startDate":
+        this.predicate.delete("startDate");
+        this.predicate.set("startDate", value);
+        break;
+    }
+  };
+
+  get axiosParams() {
+    const params = new URLSearchParams();
+    params.append("pageNumber", this.pagingParams.pageNumber.toString());
+    params.append("pageSize", this.pagingParams.pageSize.toString());
+    this.predicate.forEach((value, key) => {
+      if (key === "startDate") {
+        params.append(key, (value as Date).toISOString());
+      } else {
+        params.append(key, value);
+      }
+    });
+    return params;
   }
 
   get activitiesByDate() {
@@ -55,17 +113,22 @@ export default class ActivityStore {
   loadActivities = async () => {
     this.setIsInitialLoading(true);
     try {
-      const activities = await agent.Activities.list();
+      const result = await agent.Activities.list(this.axiosParams);
       runInAction(() => {
-        activities.forEach((activity) => {
+        result.data.forEach((activity) => {
           this.setActivity(activity);
         });
+        this.setPagination(result.pagination);
       });
     } catch (error) {
       console.log(error);
     } finally {
       this.setIsInitialLoading(false);
     }
+  };
+
+  setPagination = (pagination: Pagination) => {
+    this.pagination = pagination;
   };
 
   loadActivity = async (id: string) => {

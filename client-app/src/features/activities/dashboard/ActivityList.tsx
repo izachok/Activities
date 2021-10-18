@@ -1,5 +1,6 @@
+import { ListGroup, Stack } from "react-bootstrap";
+
 import ActivitiesListItem from "./ActivitiesListItem";
-import { Stack } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../app/stores/store";
 
@@ -8,7 +9,7 @@ function ActivityList() {
   const { groupedActivities } = activityStore;
 
   return (
-    <>
+    <ListGroup>
       {groupedActivities.map(([groupDate, activities]) => {
         return (
           <Stack gap={0} key={groupDate} className="m-3">
@@ -19,7 +20,7 @@ function ActivityList() {
           </Stack>
         );
       })}
-    </>
+    </ListGroup>
   );
 }
 

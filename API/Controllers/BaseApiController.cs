@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Application.Core;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -22,6 +23,18 @@ namespace API.Controllers
 								return NotFound();
 						if (result.IsSuccess && result.Value != null)
 								return Ok(result.Value);
+						return BadRequest(result.Error);
+				}
+
+				protected ActionResult HandlePagedResult<T>(Result<PagedList<T>> result)
+				{
+						if (result == null || (result.IsSuccess && result.Value == null))
+								return NotFound();
+						if (result.IsSuccess && result.Value != null)
+						{
+								Response.AddPaginationHeader(result.Value.CurrentPage, result.Value.PageSize, result.Value.TotalCount, result.Value.TotalPages);
+								return Ok(result.Value);
+						}
 						return BadRequest(result.Error);
 				}
 		}
