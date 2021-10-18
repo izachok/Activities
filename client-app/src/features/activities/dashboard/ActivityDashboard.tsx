@@ -5,7 +5,6 @@ import ActivitiesFilters from "./ActivitiesFilters";
 import ActivityList from "./ActivityList";
 import ActivityListItemPlaceholder from "./ActivityListItemPlaceholder";
 import InfiniteScroll from "react-infinite-scroller";
-import LoadingComponent from "./../../../app/layout/LoadingComponent";
 import { PagingParams } from "../../../app/models/pagination";
 import { observer } from "mobx-react-lite";
 import { useStore } from "./../../../app/stores/store";
@@ -32,10 +31,6 @@ function ActivityDashboard() {
     if (isInitialLoading || (activityRegistry && activityRegistry.size <= 1))
       loadActivities();
   }, [activityRegistry, isInitialLoading, loadActivities]);
-
-  // if (isInitialLoading && !loadingNext) {
-  //   return <LoadingComponent />;
-  // }
 
   return (
     <Container className="py-4">

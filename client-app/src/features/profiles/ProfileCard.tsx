@@ -19,12 +19,16 @@ export default observer(function ProfileCard({ profile }: Props) {
   }
 
   return (
-    <Card>
+    <Card style={{ maxWidth: "300px" }}>
       <Card.Header as="h3">
         <Link to={`/profiles/${profile.username}`}>{profile.displayName}</Link>
       </Card.Header>
       <Card.Body>
-        <Image src={profile.image || "/assets/user.png"} height="200" rounded />
+        <Image
+          src={profile.image || "/assets/user.png"}
+          className="w-100"
+          rounded
+        />
         <p>{trimDescr(profile.bio)}</p>
         <FollowButton profile={profile} />
         <p>

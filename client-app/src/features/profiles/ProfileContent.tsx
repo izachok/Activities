@@ -2,6 +2,7 @@ import { Card, Col, Nav, Row, Tab } from "react-bootstrap";
 
 import { Profile } from "../../app/models/profile";
 import ProfileAbout from "./ProfileAbout";
+import ProfileActivities from "./ProfileActivities";
 import ProfileFollowings from "./ProfileFollowings";
 import ProfilePhotos from "./ProfilePhotos";
 import React from "react";
@@ -30,7 +31,9 @@ export default observer(function ProfileContent({ profile }: Props) {
               <Tab.Pane eventKey="photos">
                 <ProfilePhotos profile={profile} />
               </Tab.Pane>
-              <Tab.Pane eventKey="events">Events</Tab.Pane>
+              <Tab.Pane eventKey="events">
+                <ProfileActivities />
+              </Tab.Pane>
               <Tab.Pane eventKey="followers">
                 <ProfileFollowings />
               </Tab.Pane>
