@@ -66,7 +66,7 @@ namespace API
 								.FontSources(s => s.Self())
 								.FormActions(s => s.Self())
 								.FrameAncestors(s => s.Self())
-								.ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com", "blob:"))
+								.ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com", "blob:", "image"))
 								.ScriptSources(s => s.Self().CustomSources("sha256-vOxsBUyb6Yio50HzagY1bC+PGEIM3kZjtEY8Rd7538E="))
 						);
 

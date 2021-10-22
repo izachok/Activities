@@ -31,7 +31,7 @@ namespace API.Controllers
 				public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
 				{
 						var user = await userManager.Users.Include(p => p.Photos)
-								.FirstOrDefaultAsync(x => x.NormalizedEmail == loginDto.Email.ToLower());
+								.FirstOrDefaultAsync(x => x.Email == loginDto.Email);
 						if (user == null) return Unauthorized();
 						var result = await signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
 						if (result.Succeeded)
@@ -74,7 +74,7 @@ namespace API.Controllers
 				[HttpGet]
 				public async Task<ActionResult<UserDto>> GetCurrentUser()
 				{
-						var user = await userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.NormalizedEmail == User.FindFirstValue(ClaimTypes.Email).ToLower());
+						var user = await userManager.Users.Include(p => p.Photos).FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
 
 						return CreateUserObject(user);
 				}

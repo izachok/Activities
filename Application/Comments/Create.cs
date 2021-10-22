@@ -51,7 +51,7 @@ namespace Application.Comments
 
 								if (activity == null) return null;
 
-								var user = await context.Users.Include(x => x.Photos).FirstOrDefaultAsync(u => u.NormalizedUserName == userAccessor.GetUsername().ToLower());
+								var user = await context.Users.Include(x => x.Photos).FirstOrDefaultAsync(u => u.UserName == userAccessor.GetUsername());
 
 								if (user == null) return null;
 

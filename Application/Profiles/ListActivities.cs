@@ -37,14 +37,14 @@ namespace Application.Profiles
 						public async Task<Result<List<UserActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
 						{
 								var query = context.ActivityAttendees
-										.Where(x => x.AppUser.NormalizedUserName == request.Username.ToLower())
+										.Where(x => x.AppUser.UserName == request.Username)
 										.OrderBy(d => d.Activity.Date)
 										.ProjectTo<UserActivityDto>(mapper.ConfigurationProvider).AsQueryable();
 
 								switch (request.Predicate)
 								{
 										case "hosting":
-												query = query.Where(x => x.HostUsername.ToLower() == request.Username.ToLower());
+												query = query.Where(x => x.HostUsername == request.Username);
 												break;
 										case "past":
 												query = query.Where(x => x.Date < DateTime.UtcNow);

@@ -28,13 +28,13 @@ namespace Application.Core
 								.ForMember(d => d.Image, o => o.MapFrom(s => s.AppUser.Photos.FirstOrDefault(p => p.IsMain).Url))
 								.ForMember(s => s.FollowersCount, o => o.MapFrom(x => x.AppUser.Followers.Count))
 								.ForMember(s => s.FollowingCount, o => o.MapFrom(x => x.AppUser.Followings.Count))
-								.ForMember(d => d.IsFollowing, o => o.MapFrom(f => f.AppUser.Followers.Any(x => x.Observer.NormalizedUserName == currentUsername.ToLower())));
+								.ForMember(d => d.IsFollowing, o => o.MapFrom(f => f.AppUser.Followers.Any(x => x.Observer.UserName == currentUsername)));
 
 						CreateMap<AppUser, Profiles.Profile>()
 								.ForMember(d => d.Image, o => o.MapFrom(s => s.Photos.FirstOrDefault(p => p.IsMain).Url))
 								.ForMember(s => s.FollowersCount, o => o.MapFrom(x => x.Followers.Count))
 								.ForMember(s => s.FollowingCount, o => o.MapFrom(x => x.Followings.Count))
-								.ForMember(d => d.IsFollowing, o => o.MapFrom(f => f.Followers.Any(x => x.Observer.NormalizedUserName == currentUsername.ToLower())));
+								.ForMember(d => d.IsFollowing, o => o.MapFrom(f => f.Followers.Any(x => x.Observer.UserName == currentUsername)));
 
 						CreateMap<Comment, CommentDto>()
 								.ForMember(d => d.DisplayName, o => o.MapFrom(s => s.Author.DisplayName))
