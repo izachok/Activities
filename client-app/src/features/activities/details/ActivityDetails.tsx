@@ -25,7 +25,8 @@ function ActivityDetails() {
     return () => clearSelectedActivity();
   }, [clearSelectedActivity, id, loadActivity]);
 
-  if (isInitialLoading || !selectedActivity) return <LoadingComponent />;
+  if (isInitialLoading || !selectedActivity)
+    return <LoadingComponent content="Loading activity..." />;
 
   return (
     <Container className="py-4">

@@ -33,7 +33,10 @@ export default observer(function ActivityDetailedHeader({ activity }: Props) {
           <Card.Text>{format(activity.date!, "dd MMM yyyy")}</Card.Text>
           <Card.Text>
             Hosted by{" "}
-            <Link to={`/profiles/${activity.hostUsername}`}>
+            <Link
+              to={`/profiles/${activity.hostUsername}`}
+              className="text-white"
+            >
               {activity.host?.displayName}
             </Link>
           </Card.Text>

@@ -20,12 +20,15 @@ export default observer(function ProfileFollowings() {
           : `${profile?.displayName} is following`}
       </h4>
       <Row xs={3}>
-        {isLoading && <LoadingComponent />}
-        {followings.map((profile) => (
-          <Col key={profile.username}>
-            <ProfileCard profile={profile} />
-          </Col>
-        ))}
+        {isLoading ? (
+          <LoadingComponent className="w-100 h-100" />
+        ) : (
+          followings.map((profile) => (
+            <Col key={profile.username}>
+              <ProfileCard profile={profile} />
+            </Col>
+          ))
+        )}
       </Row>
     </>
   );

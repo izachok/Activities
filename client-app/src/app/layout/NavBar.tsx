@@ -29,9 +29,9 @@ export default observer(function NavBar() {
           <Nav.Link as={NavLink} to="/activities">
             Activities
           </Nav.Link>
-          <Nav.Link as={NavLink} to="/errors">
+          {/* <Nav.Link as={NavLink} to="/errors">
             Errors
-          </Nav.Link>
+          </Nav.Link> */}
           <NavLink to="/createActivity" className="me-auto">
             <Button variant="success">Create activity</Button>
           </NavLink>

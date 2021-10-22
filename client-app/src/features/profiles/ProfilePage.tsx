@@ -17,7 +17,8 @@ export default observer(function ProfilePage() {
     return () => profileStore.setActiveTab(null);
   }, [profileStore, username]);
 
-  if (profileStore.isLoadingProfile) return <LoadingComponent />;
+  if (profileStore.isLoadingProfile)
+    return <LoadingComponent content="Loading profile..." />;
 
   return (
     <Container>

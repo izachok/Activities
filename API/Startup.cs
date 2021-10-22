@@ -56,16 +56,39 @@ namespace API
 				{
 						app.UseMiddleware<ExceptionMiddleware>();
 
+						app.UseXContentTypeOptions();
+						app.UseReferrerPolicy(opt => opt.NoReferrer());
+						app.UseXXssProtection(opt => opt.EnabledWithBlockMode());
+						app.UseXfo(opt => opt.Deny());
+						app.UseCsp(opt => opt
+								.BlockAllMixedContent()
+								.StyleSources(s => s.Self())
+								.FontSources(s => s.Self())
+								.FormActions(s => s.Self())
+								.FrameAncestors(s => s.Self())
+								.ImageSources(s => s.Self().CustomSources("https://res.cloudinary.com", "blob:"))
+								.ScriptSources(s => s.Self().CustomSources("sha256-vOxsBUyb6Yio50HzagY1bC+PGEIM3kZjtEY8Rd7538E="))
+						);
+
 						if (env.IsDevelopment())
 						{
 								//app.UseDeveloperExceptionPage();
 								app.UseSwagger();
 								app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 						}
+						else if (env.IsProduction())
+						{
+								app.Use(async (context, next) =>
+								{
+										context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000");
+										await next.Invoke();
+								});
 
-						//app.UseHttpsRedirection();
+						}
 
 						app.UseRouting();
+						app.UseDefaultFiles();
+						app.UseStaticFiles();
 
 						app.UseCors("CorsPolicy");
 
@@ -76,6 +99,7 @@ namespace API
 						{
 								endpoints.MapControllers();
 								endpoints.MapHub<ChatHub>("/chat");
+								endpoints.MapFallbackToController("Index", "Fallback");
 						});
 				}
 		}

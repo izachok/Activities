@@ -13,27 +13,30 @@ export default observer(function ProfileActivitiesList() {
 
   return (
     <Row xs={3}>
-      {isLoadingActivities && <LoadingComponent />}
-      {activities.map((activity) => (
-        <Col key={activity.id}>
-          <Link to={`/activities/${activity.id}`}>
-            <Card>
-              <Card.Img
-                variant="top"
-                src={`/assets/categoryImages/${activity.category}.jpg`}
-              />
-              <Card.Body className="text-center">
-                <Card.Title>{activity.title}</Card.Title>
-                <Card.Text>
-                  {format(new Date(activity.date), "do MMM")}
-                  <br />
-                  {format(new Date(activity.date), "h:mm")}
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Link>
-        </Col>
-      ))}
+      {isLoadingActivities ? (
+        <LoadingComponent className="w-100 h-100" />
+      ) : (
+        activities.map((activity) => (
+          <Col key={activity.id}>
+            <Link to={`/activities/${activity.id}`} className="text-body">
+              <Card>
+                <Card.Img
+                  variant="top"
+                  src={`/assets/categoryImages/${activity.category}.jpg`}
+                />
+                <Card.Body className="text-center">
+                  <Card.Title>{activity.title}</Card.Title>
+                  <Card.Text>
+                    {format(new Date(activity.date), "do MMM")}
+                    <br />
+                    {format(new Date(activity.date), "h:mm")}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Link>
+          </Col>
+        ))
+      )}
     </Row>
   );
 });
